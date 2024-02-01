@@ -28,6 +28,7 @@ O(n^2) 수준
 <!-- summary 아래 한칸 공백 두어야함 -->
 ## 접은 제목
 '''
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -92,6 +93,7 @@ int main(void) {
 
 	return 0;
 }
+
 '''
 </details>
 
