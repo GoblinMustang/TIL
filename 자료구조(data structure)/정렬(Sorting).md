@@ -14,21 +14,21 @@ O(n^2) 수준
 
     - 힙을 이용한 정렬로 단순한 정렬 알고리즘에 비해 구현이 조금 더 어려우나, 만족스러운, 좋은 성능을 가진다.
     - O(nlogn) 수준.
+    ##
 
 * 병합 정렬(Merge Sort)
     - 이동연산, 비교연산 빅-오 둘다 O(nlogn)
     - 배열로 구현하면 임시 메모리가 필요하다는 단점 있음.
     - 연결리스트의 경우는 임시 메모리 필요 X -> 배열에 비해 더 좋은 성능 기대 가능
 
-#### 병합 정렬 구현 코드(출처: 윤성우의 열혈 자료구조)
+
 
 <details>
-<summary>병합 정렬 코드 보기</summary>
+<summary>병합 정렬 구현 코드(출처: 윤성우의 열혈 자료구조)</summary>
 
 <!-- summary 아래 한칸 공백 두어야함 -->
-## 접은 제목
-'''
-
+## 병합 정렬(Merge Sort)
+```C
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -90,14 +90,12 @@ int main(void) {
 		printf("%d ", arr[i]);
 	printf("\n");
 
-
 	return 0;
 }
+```
 
-'''
+
 </details>
-
-## 접기 끝
 
 
 * 퀵 정렬(Quick Sort)
