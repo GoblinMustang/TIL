@@ -1,9 +1,141 @@
 # 정렬
 
 ## 단순한 정렬 알고리즘
-* 버블 정렬(Bubble Sort)
+* 버블 정렬(Bubble Sort) 
+
+<details>
+<summary>버블 정렬 코드(출처: 윤성우의 열혈 자료구조)</summary>
+
+```C
+#include <stdio.h>
+
+void BubbleSort(int arr[], int n)
+{
+	int i, j;
+	int temp;
+
+	for(i=0; i<n-1; i++)
+	{
+		for(j=0; j<(n-i)-1; j++)
+		{
+			if(arr[j] > arr[j+1])
+			{
+				temp = arr[j];
+				arr[j] = arr[j+1];
+				arr[j+1] = temp;
+			}
+		}
+	}
+}
+
+
+int main(void)
+{
+	int arr[4] = {3, 2, 4, 1};
+	int i;
+
+	BubbleSort(arr, sizeof(arr)/sizeof(int));
+
+	for(i=0; i<4; i++)
+		printf("%d ", arr[i]);
+
+	printf("\n");
+	return 0;
+}
+```
+</details>
+
 * 선택 정렬(Selection Sort)
+<details>
+<summary>선택 정렬 코드(출처: 윤성우의 열혈 자료구조)</summary>
+
+```C
+#include <stdio.h>
+
+void SelSort(int arr[], int n)
+{
+	int i, j;
+	int maxIdx;
+	int temp;
+
+	for(i=0; i<n-1; i++)
+	{
+		maxIdx = i;    // 정렬 순서상 가장 앞서는 데이터의 index
+
+		for(j=i+1; j<n; j++)   // 최소값 탐색
+		{
+			if(arr[j] < arr[maxIdx])
+				maxIdx = j;
+		}
+
+		/* 교환 */
+		temp = arr[i];
+		arr[i] = arr[maxIdx];
+		arr[maxIdx] = temp;
+	}
+}
+
+
+int main(void)
+{
+	int arr[4] = {3, 4, 2, 1};
+	int i;
+
+	SelSort(arr, sizeof(arr)/sizeof(int));
+
+	for(i=0; i<4; i++)
+		printf("%d ", arr[i]);
+
+	printf("\n");
+	return 0;
+}
+```
+</details>
+
 * 삽입 정렬(Insertion Sort)
+<details>
+<summary>삽입 정렬 코드(출처: 윤성우의 열혈 자료구조)</summary>
+
+```C
+#include <stdio.h>
+
+void InserSort(int arr[], int n)
+{
+	int i, j;
+	int insData;
+
+	for(i=1; i<n; i++)
+	{
+		insData = arr[i];   // 정렬 대상을 insData에 저장
+
+		for(j=i-1; j>=0 ; j--)
+		{
+			if(arr[j] > insData) 
+				arr[j+1] = arr[j];    // 비교 대상 한 칸 뒤로 밀기
+			else
+				break;   // 삽입 위치 찾았으니 탈출!
+		}
+
+		arr[j+1] = insData;  // 찾은 위치에 정렬 대상 삽입!
+	}
+}
+
+
+int main(void)
+{
+	int arr[5] = {5, 3, 2, 4, 1};
+	int i;
+
+	InserSort(arr, sizeof(arr)/sizeof(int));
+
+	for(i=0; i<5; i++)
+		printf("%d ", arr[i]);
+
+	printf("\n");
+	return 0;
+}
+```
+</details>
 
 단순 정렬 알고리즘들은 구현이 쉬우나, 성능이 만족스럽지 못 하다.
 O(n^2) 수준
@@ -14,7 +146,195 @@ O(n^2) 수준
 
     - 힙을 이용한 정렬로 단순한 정렬 알고리즘에 비해 구현이 조금 더 어려우나, 만족스러운, 좋은 성능을 가진다.
     - O(nlogn) 수준.
-    
+
+<details>
+<summary>힙 정렬 코드(출처: 윤성우의 열혈 자료구조)</summary>
+
+<details>
+<summary>main.c</summary>
+
+```C
+#include <stdio.h>
+#include "UsefulHeap.h"
+
+int PriComp(int n1, int n2)
+{
+	return n2-n1;
+//	return n1-n2;
+}
+
+void HeapSort(int arr[], int n, PriorityComp pc)
+{
+	Heap heap;
+	int i;
+
+	HeapInit(&heap, pc);
+
+	// 정렬 대상을 가지고 힙을 구성한다.
+	for(i=0; i<n; i++)
+		HInsert(&heap, arr[i]);
+
+	// 순서대로 하나씩 꺼내서 정렬을 완성한다.
+	for(i=0; i<n; i++)
+		arr[i] = HDelete(&heap);
+}
+
+int main(void)
+{
+	int arr[4] = {3, 4, 2, 1};
+	int i;
+
+	HeapSort(arr, sizeof(arr)/sizeof(int), PriComp);
+
+	for(i=0; i<4; i++)
+		printf("%d ", arr[i]);
+
+	printf("\n");
+	return 0;
+}
+
+```
+</details>
+<details>
+<summary>UsefulHeap.c</summary>
+
+```C
+#include "UsefulHeap.h"
+
+void HeapInit(Heap * ph, PriorityComp pc)
+{
+	ph->numOfData = 0;
+	ph->comp = pc;
+}
+
+int HIsEmpty(Heap * ph)
+{
+	if(ph->numOfData == 0)
+		return TRUE;
+	else
+		return FALSE;
+}
+
+int GetParentIDX(int idx) 
+{ 
+	return idx/2; 
+}
+
+int GetLChildIDX(int idx) 
+{ 
+	return idx*2; 
+}
+
+int GetRChildIDX(int idx) 
+{ 
+	return GetLChildIDX(idx)+1; 
+}
+
+int GetHiPriChildIDX(Heap * ph, int idx)
+{
+	if(GetLChildIDX(idx) > ph->numOfData)
+		return 0;
+
+	else if(GetLChildIDX(idx) == ph->numOfData)
+		return GetLChildIDX(idx);
+
+	else
+	{
+	//	if(ph->heapArr[GetLChildIDX(idx)].pr 
+	//				> ph->heapArr[GetRChildIDX(idx)].pr)
+		if(ph->comp(ph->heapArr[GetLChildIDX(idx)], 
+					ph->heapArr[GetRChildIDX(idx)]) < 0)
+			return GetRChildIDX(idx);
+		else
+			return GetLChildIDX(idx);
+	}
+}
+
+void HInsert(Heap * ph, HData data)
+{
+	int idx = ph->numOfData+1;
+
+	while(idx != 1)
+	{
+	//	if(pr < (ph->heapArr[GetParentIDX(idx)].pr))
+		if(ph->comp(data, ph->heapArr[GetParentIDX(idx)]) > 0)
+		{
+			ph->heapArr[idx] = ph->heapArr[GetParentIDX(idx)];
+			idx = GetParentIDX(idx);
+		}
+		else
+		{
+			break;
+		}
+	}
+	
+	ph->heapArr[idx] = data;
+	ph->numOfData += 1;
+}
+
+HData HDelete(Heap * ph)
+{
+	HData retData = ph->heapArr[1];
+	HData lastElem = ph->heapArr[ph->numOfData];
+
+	int parentIdx = 1;
+	int childIdx;
+
+	while(childIdx = GetHiPriChildIDX(ph, parentIdx))
+	{
+	//	if(lastElem.pr <= ph->heapArr[childIdx].pr)
+		if(ph->comp(lastElem, ph->heapArr[childIdx]) >= 0)
+			break;
+
+		ph->heapArr[parentIdx] = ph->heapArr[childIdx];
+		parentIdx = childIdx;
+	}
+
+	ph->heapArr[parentIdx] = lastElem;
+	ph->numOfData -= 1;
+	return retData;
+}
+```
+</details>
+<details>
+<summary>UsefulHeap.h</summary>
+
+```C
+#ifndef __USEFUL_HEAP_H__
+#define __USEFUL_HEAP_H__
+
+#define TRUE	1
+#define FALSE	0
+
+/*** Heap의 정의 ****/
+#define HEAP_LEN	100
+
+typedef int HData;
+
+// d1의 우선순위가 높다면 0보다 큰 값
+// d2의 우선순위가 높다면 0보다 작은 값
+// d1과 d2의 우선순위가 같다면 0을 반환
+typedef int PriorityComp(HData d1, HData d2);
+
+typedef struct _heap
+{
+	PriorityComp * comp;
+	int numOfData;
+	HData heapArr[HEAP_LEN];
+} Heap;
+
+/*** Heap 관련 연산들 ****/
+void HeapInit(Heap * ph, PriorityComp pc);
+int HIsEmpty(Heap * ph);
+
+void HInsert(Heap * ph, HData data);
+HData HDelete(Heap * ph);
+
+#endif
+```
+</details>
+</details>
+
 ##
 
 * 병합 정렬(Merge Sort)
